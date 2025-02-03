@@ -90,6 +90,9 @@ class CellularAutomatonModel:
         """Reinicia o grid aplicando um padrão pré-definido ou aleatório.
            Se pattern for 'Random' ou se não houver padrão definido, o grid é populado aleatoriamente."""
         self.grid = np.zeros((N, N), dtype=int)
+        self.generation = 0
+        print(f"Resetando grid com padrão {pattern} da categoria {category}")   
+        print(f"Geracao: {self.generation}")
         pattern_coords = None
         if (self.current_automaton in patterns and
             category in patterns[self.current_automaton] and

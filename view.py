@@ -14,6 +14,14 @@ class CellularAutomatonUI:
 
         self.master.title("Autômatos Celulares")
         self.master.geometry("800x600")
+        
+        # Carregar ícones
+        self.icon_zoom = tk.PhotoImage(file="icons/zoom.png")
+        self.icon_start = tk.PhotoImage(file="icons/start.png")
+        self.icon_step = tk.PhotoImage(file="icons/step.png")
+        self.icon_pause = tk.PhotoImage(file="icons/pause.png")
+        self.icon_reset = tk.PhotoImage(file="icons/restart.png")
+        
         # Configura as linhas da janela principal:
         # Linha 0 (canvas) expande; linha 1 (controles) tem altura fixa.
         self.master.rowconfigure(0, weight=1)
@@ -84,8 +92,8 @@ class CellularAutomatonUI:
 
         # Menu Exibir com controles de zoom e velocidade
         view_menu = tk.Menu(menubar, tearoff=0)
-        view_menu.add_command(label="Ajustar Zoom", command=self.wrap_command(self.adjust_zoom))
-        view_menu.add_command(label="Ajustar Velocidade", command=self.wrap_command(self.adjust_speed))
+        view_menu.add_command(label="Zoom", image=self.icon_zoom, compound="left", command=self.wrap_command(self.adjust_zoom))
+        view_menu.add_command(label="Velocidade", command=self.wrap_command(self.adjust_speed))
         menubar.add_cascade(label="Exibir", menu=view_menu)
 
         # Menu Ajuda
@@ -120,48 +128,31 @@ class CellularAutomatonUI:
         self.canvas.bind("<Button-1>", self.toggle_cell)
 
     def create_controls(self):
-        # Cria o frame de controles na linha 1 (altura fixa)
         self.control_frame = ttk.Frame(self.master)
         self.control_frame.grid(row=1, column=0, sticky="ew", padx=5, pady=5)
-        self.control_frame.columnconfigure(0, weight=0)
 
-        # OptionMenu para categoria
         self.category_var = tk.StringVar()
         self.category_menu = ttk.OptionMenu(self.control_frame, self.category_var, "")
-        self.category_menu.configure(style='Modern.TMenubutton')
         self.category_menu.pack(side=tk.LEFT, padx=5)
         self.update_category_menu()
 
-        # OptionMenu para padrão
         self.pattern_var = tk.StringVar()
         self.pattern_menu = ttk.OptionMenu(self.control_frame, self.pattern_var, "")
-        self.pattern_menu.configure(style='Modern.TMenubutton')
         self.pattern_menu.pack(side=tk.LEFT, padx=5)
         self.update_pattern_menu()
 
-        # Botões estilizados
+        self.btn_start_pause = ttk.Button(
+            self.control_frame, image=self.icon_start, command=self.toggle_simulation, style='Icon.TButton')
+        self.btn_start_pause.pack(side=tk.LEFT, padx=5)
+
         ttk.Button(
-            self.control_frame,
-            text="Iniciar/Pausar",
-            command=self.wrap_command(self.toggle_simulation),
-            style='Modern.TButton'
+            self.control_frame, image=self.icon_step, command=self.step_and_redraw, style='Icon.TButton'
         ).pack(side=tk.LEFT, padx=5)
 
         ttk.Button(
-            self.control_frame,
-            text="Avançar",
-            command=self.wrap_command(self.step_and_redraw),
-            style='Modern.TButton'
+            self.control_frame, image=self.icon_reset, command=self.reset_and_redraw, style='Icon.TButton'
         ).pack(side=tk.LEFT, padx=5)
 
-        ttk.Button(
-            self.control_frame,
-            text="Reiniciar",
-            command=self.wrap_command(self.reset_and_redraw),
-            style='Modern.TButton'
-        ).pack(side=tk.LEFT, padx=5)
-
-        # Label para status (exibindo a geração atual)
         self.status_label = ttk.Label(self.control_frame, text="Geração: 0")
         self.status_label.pack(side=tk.RIGHT, padx=5)
 
